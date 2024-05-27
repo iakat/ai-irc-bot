@@ -6,6 +6,7 @@ from collections import defaultdict
 from contextlib import suppress
 from os import environ, getenv
 from sys import exit
+from textwrap import wrap
 from uuid import uuid4
 
 import aiohttp
@@ -27,7 +28,7 @@ IRC_USERNAME = getenv("SUPER_IRC_USERNAME", getenv("SUPER_IRC_NICK", "Super"))
 IRC_PASSWORD = getenv("SUPER_IRC_PASSWORD", "")
 IRC_CHANNELS = getenv("SUPER_IRC_CHANNELS").split(",")
 
-MODEL = getenv("SUPER_MODEL", "mixtral-8x22b")
+MODEL = getenv("SUPER_MODEL", "mixtral-8x7b")
 
 ALLOWED_URLS = getenv(
     "SUPER_ALLOWED_URLS", "https://i.katia.sh/,https://paste.ee/r/"
@@ -74,13 +75,12 @@ class Conversation:
             res = await self._get_url(f"https://i.katia.sh/ai-irc-bots/{IRC_NICK}.txt")
             if not res or res.status == 404 or res == "Not Found":
                 raise Exception("no prompt")
-            return [
-                {
-                    "role": "system",
-                    "content": "Hello! How can I assist you today?",
-                }
-            ]
-        return []
+        return [
+            {
+                "role": "system",
+                "content": "Hello! How can I assist you today?",
+            }
+        ]
 
     def remove_own_nick(self, line):
         # case insensitive
@@ -265,15 +265,11 @@ class Server(BaseServer):
             FORGIVE_ME[1].add(line.hostmask.nickname)
             forgiven = " ".join(FORGIVE_ME[1])
             if len(FORGIVE_ME[0]) >= 3:
-                await self.send(
-                    build("PRIVMSG", [line.params[0], f"i forgive you {forgiven} :'("])
-                )
+                await self.send(build("PRIVMSG", [line.params[0], f"i forgive you {forgiven} :'("]))
                 await self.send(build("QUIT"))
                 exit(0)
             else:
-                await self.send(
-                    build("PRIVMSG", [line.params[0], f"i forgive you {forgiven}"])
-                )
+                await self.send(build("PRIVMSG", [line.params[0], f"i forgive you {forgiven}"]))
                 return
 
         if nick_match and is_katia and ".s-m" in message:

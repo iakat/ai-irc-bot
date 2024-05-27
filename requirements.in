@@ -1,4 +1,4 @@
 aiohttp
 irctokens
-ircrobots @ git+https://github.com/unresolv/ircrobots.git
-ircstates @ git+https://github.com/unresolv/ircstates.git
+ircrobots @ git+https://github.com/iakat/ircrobots.git
+ircstates @ git+https://github.com/iakat/ircstates.git

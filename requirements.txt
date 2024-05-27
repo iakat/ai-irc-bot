@@ -29,9 +29,9 @@ idna==3.6
     #   anyio
     #   ircrobots
     #   yarl
-ircrobots @ git+https://github.com/unresolv/ircrobots.git
+ircrobots @ git+https://github.com/iakat/ircrobots.git
     # via -r requirements.in
-ircstates @ git+https://github.com/unresolv/ircstates.git
+ircstates @ git+https://github.com/iakat/ircstates.git
     # via
     #   -r requirements.in
     #   ircrobots
