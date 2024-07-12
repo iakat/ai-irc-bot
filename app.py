@@ -35,7 +35,7 @@ ALLOWED_URLS = getenv(
 ).split(",")
 
 FORGIVE_ME = [set(), set()]
-INFERENCE_URL = os.getenv("SUPER_INFERENCE_URL", "http://gpt4free.gpt4free/backend-api/v2/conversation")
+INFERENCE_URL = getenv("SUPER_INFERENCE_URL", "http://gpt4free.gpt4free/backend-api/v2/conversation")
 
 
 #### CONVERSATION
