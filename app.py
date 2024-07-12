@@ -148,7 +148,7 @@ class Conversation:
                     continue
                 # otherwise, add it to res
                 res += j["content"]
-        if res:
+        if res and not self._stopped:
             yield res
         self._messages.append({"role": "assistant", "content": res_full})
 
