@@ -26,7 +26,7 @@ for i, server in enumerate(IRC_SERVERS):
 IRC_NICK = getenv("SUPER_IRC_NICK", "Super")
 IRC_USERNAME = getenv("SUPER_IRC_USERNAME", getenv("SUPER_IRC_NICK", "Super"))
 IRC_PASSWORD = getenv("SUPER_IRC_PASSWORD", "")
-IRC_CHANNELS = getenv("SUPER_IRC_CHANNELS").split(",")
+IRC_CHANNELS = getenv("SUPER_IRC_CHANNELS").split(",") + getenv("SUPER_IRC_CHANNELS2", "").split(",")
 
 MODEL = getenv("SUPER_MODEL", "mixtral-8x7b")
 
