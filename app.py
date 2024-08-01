@@ -98,8 +98,8 @@ class Conversation:
 
     def remove_own_nick(self, line):
         # case insensitive
-        line = re.sub(rf"^{IRC_NICK}[:,]?", "", line, flags=re.IGNORECASE)
-        line = re.sub(rf"^\<{IRC_NICK}\>", "", line, flags=re.IGNORECASE)
+        line = re.sub(rf"^{IRC_NICK}[:,]?\s?", "", line, flags=re.IGNORECASE)
+        line = re.sub(rf"^\<{IRC_NICK}\>\s?", "", line, flags=re.IGNORECASE)
         return line
 
     def sanitise(self, line):
