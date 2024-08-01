@@ -26,7 +26,11 @@ for i, server in enumerate(IRC_SERVERS):
 IRC_NICK = getenv("SUPER_IRC_NICK", "Super")
 IRC_USERNAME = getenv("SUPER_IRC_USERNAME", getenv("SUPER_IRC_NICK", "Super"))
 IRC_PASSWORD = getenv("SUPER_IRC_PASSWORD", "")
-IRC_CHANNELS = getenv("SUPER_IRC_CHANNELS").split(",") + getenv("SUPER_IRC_CHANNELS2", "").split(",")
+IRC_CHANNELS = getenv("SUPER_IRC_CHANNELS").split(",") + getenv(
+    "SUPER_IRC_CHANNELS2", ""
+).split(",")
+
+INITIAL_PROMPT = getenv("SUPER_INITIAL_PROMPT", "Hello! How can I assist you today?")
 
 MODEL = getenv("SUPER_MODEL", "mixtral-8x7b")
 
@@ -35,7 +39,9 @@ ALLOWED_URLS = getenv(
 ).split(",")
 
 FORGIVE_ME = [set(), set()]
-INFERENCE_URL = getenv("SUPER_INFERENCE_URL", "http://gpt4free.gpt4free/backend-api/v2/conversation")
+INFERENCE_URL = getenv(
+    "SUPER_INFERENCE_URL", "http://gpt4free.gpt4free/backend-api/v2/conversation"
+)
 
 
 #### CONVERSATION
@@ -74,11 +80,19 @@ class Conversation:
         with suppress(Exception):
             res = await self._get_url(f"https://i.katia.sh/ai-irc-bots/{IRC_NICK}.txt")
             if not res or res.status == 404 or res == "Not Found":
+                print("no prompt")
                 raise Exception("no prompt")
+            else:
+                return [
+                    {
+                        "role": "system",
+                        "content": res,
+                    }
+                ]
         return [
             {
                 "role": "system",
-                "content": "Hello! How can I assist you today?",
+                "content": INITIAL_PROMPT,
             }
         ]
 
@@ -153,6 +167,7 @@ class Conversation:
         self._messages.append({"role": "assistant", "content": res_full})
 
     async def _get_url(self, url):
+        print(f"trying to get {url}")
         if not any(url.startswith(allowed) for allowed in ALLOWED_URLS):
             return False
         timeout = aiohttp.ClientTimeout(total=3)
@@ -161,6 +176,7 @@ class Conversation:
                 raise Exception("404")
             res = await response.text()
             # if 404, raise an exception
+        print("res: ", res)
         return res
 
     async def speak(self, nickname, message):
@@ -265,11 +281,15 @@ class Server(BaseServer):
             FORGIVE_ME[1].add(line.hostmask.nickname)
             forgiven = " ".join(FORGIVE_ME[1])
             if len(FORGIVE_ME[0]) >= 3:
-                await self.send(build("PRIVMSG", [line.params[0], f"i forgive you {forgiven} :'("]))
+                await self.send(
+                    build("PRIVMSG", [line.params[0], f"i forgive you {forgiven} :'("])
+                )
                 await self.send(build("QUIT"))
                 exit(0)
             else:
-                await self.send(build("PRIVMSG", [line.params[0], f"i forgive you {forgiven}"]))
+                await self.send(
+                    build("PRIVMSG", [line.params[0], f"i forgive you {forgiven}"])
+                )
                 return
 
         if nick_match and is_katia and ".s-m" in message:
